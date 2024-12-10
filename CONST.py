@@ -9,6 +9,7 @@ FRAME_SIZE = (HEIGHT_WINDOW - HEIGHT_BOARD) // 2
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+RED = (255, 0, 0)
 
 # Цвета полей
 LIGHT_BROWN = (240, 217, 181)

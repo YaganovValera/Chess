@@ -11,7 +11,7 @@ def main():
         login = ClassLogin()
         login.start_login()
 
-        if login:
+        if login.result:
             game = ClassGameChess()
             game.run()
         else:
