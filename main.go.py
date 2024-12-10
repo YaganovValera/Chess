@@ -1,23 +1,21 @@
 import pygame
 
-from Login import Class_Login
-
-# Параметры окна
-
-WIDTH_BOAR, HEIGHT_BOARD = 500, 500
-
+from Login import ClassLogin
+from Game import ClassGameChess
 # Инициализация Pygame
 pygame.init()
 
 
 def main():
     while True:
-        login = Class_Login()
+        login = ClassLogin()
         login.start_login()
 
         if login:
-            pass 
-        break
+            game = ClassGameChess()
+            game.run()
+        else:
+            break
 
 
 pygame.quit()

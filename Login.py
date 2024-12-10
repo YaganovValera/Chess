@@ -42,7 +42,8 @@ MAX_LEN = 19
 MIN_LEN_PASSWORD = 8
 MIN_LEN_LOGIN = 3
 
-class Class_Login:
+
+class ClassLogin:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
