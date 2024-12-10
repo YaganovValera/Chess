@@ -8,6 +8,7 @@ class ClassSetting:
         self.start_x = board_width + frame_size*2 + 20
         self.frame_size = frame_size
         self.message = ""
+        self.message_info = "редактор"
         self.panel_width = 200
         self.buttons = []
         self.init_buttons()
@@ -25,14 +26,10 @@ class ClassSetting:
             {"label": "Начать заново", "rect": pygame.Rect(start_x, start_y + 280, button_width, button_height)},
         ]
 
-    def draw(self, winner=None, cur_move=True):
-        if winner is None:
-            result = "-"
-        else:
-            result = "Б" if winner else "Ч"
+    def draw(self, winner, cur_move=True):
         # Отображение победителя
         font = pygame.font.SysFont("TimesNewRoman", 28)
-        text_winner = font.render(f"Победитель: {result}", True, BLACK)
+        text_winner = font.render(f"Победитель: {winner}", True, BLACK)
         self.screen.blit(text_winner, (self.start_x, self.frame_size + 20))
 
         color_move = "белых" if cur_move else "черных"
@@ -48,8 +45,13 @@ class ClassSetting:
             label_rect = label.get_rect(center=button["rect"].center)
             self.screen.blit(label, label_rect)
 
-        text_cur_move = font.render(self.message, True, RED)
-        self.screen.blit(text_cur_move, (self.start_x, self.frame_size + 360))
+        # режим
+        text_cur_move = font_button.render(f"Режим: {self.message_info}", True, BLACK)
+        self.screen.blit(text_cur_move, (self.start_x, self.frame_size + 240))
+
+        # сообщение об ошибке
+        text_cur_move = font_button.render(self.message, True, RED)
+        self.screen.blit(text_cur_move, (self.start_x, self.frame_size + 500))
 
     def handle_click(self, mouse_pos):
         for button in self.buttons:

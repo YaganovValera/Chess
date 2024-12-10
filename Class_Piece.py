@@ -2,6 +2,22 @@ import pygame
 from CONST import *
 
 
+def is_occupied(piece, color=None):
+    """
+    Проверяет, занята ли клетка на доске.
+    :param piece: Фигура
+    :param color: Цвет фигуры, с которым нужно сравнить (если указано).
+    :return:
+        True, если клетка занята и цвет совпадает (или любой, если color=None).
+        False, если клетка пуста или цвет не совпадает.
+    """
+    if piece is None:  # Если клетка пуста
+        return False
+    if color is None:  # Если цвет не указан, клетка считается занятой
+        return True
+    return piece.color == color  # Сравниваем цвет фигуры на клетке с заданным
+
+
 class ChessPiece:
     def __init__(self, x, y, color):
         self.x = x
@@ -18,6 +34,12 @@ class ChessPiece:
     def get_possible_moves(self, board):
         return []
 
+    def can_attack(self, x, y, board):
+        """
+        Проверяет, может ли фигура атаковать клетку (x, y) на доске.
+        """
+        return (x, y) in self.get_possible_moves(board)
+
 
 class King(ChessPiece):
     def __init__(self, x, y, color):
@@ -31,7 +53,7 @@ class King(ChessPiece):
                 if dx == 0 and dy == 0:
                     continue
                 nx, ny = self.x + dx, self.y + dy
-                if 0 <= nx < 8 and 0 <= ny < 8 and not board.is_occupied(nx, ny, self.color):
+                if 0 <= nx < 8 and 0 <= ny < 8 and not is_occupied(board[ny][nx], self.color):
                     moves.append((nx, ny))
         return moves
 
@@ -45,7 +67,7 @@ class Knight(ChessPiece):
         moves = []
         for dx, dy in [(-2, -1), (-1, -2), (1, -2), (2, -1), (2, 1), (1, 2), (-1, 2), (-2, 1)]:
             nx, ny = self.x + dx, self.y + dy
-            if 0 <= nx < 8 and 0 <= ny < 8 and not board.is_occupied(nx, ny, self.color):
+            if 0 <= nx < 8 and 0 <= ny < 8 and not is_occupied(board[ny][nx], self.color):
                 moves.append((nx, ny))
         return moves
 
@@ -66,10 +88,10 @@ class Queen(ChessPiece):
             while True:
                 nx, ny = nx + dx, ny + dy
                 if 0 <= nx < 8 and 0 <= ny < 8:
-                    if board.is_occupied(nx, ny, self.color):
+                    if is_occupied(board[ny][nx], self.color):
                         break
                     moves.append((nx, ny))
-                    if board.is_occupied(nx, ny):
+                    if is_occupied(board[ny][nx]):
                         break
                 else:
                     break

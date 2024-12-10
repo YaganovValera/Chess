@@ -23,6 +23,8 @@ class ClassGameChess:
         while not self.quit_game:
             self.handle_events()
             self.render()
+            if self.running:
+                self.check_game_over()
             self.clock.tick(30)
 
     def handle_events(self):
@@ -40,9 +42,20 @@ class ClassGameChess:
                         self.board.color_player = COLOR_B if self.board.color_player == COLOR_W else COLOR_W
                         self.switch_colors()
                     elif button_action == "Начать играть":
-                        self.running = True
+                        if self.running:
+                            break
+                        if self.board.validate_user_setup():
+                            self.settings.message_info = "игра"
+                            self.board.selected_piece = None  # выбранная фигура
+                            self.board.winner = "-"
+                            self.board.highlight_moves = []
+                            self.running = True
+                        else:
+                            self.settings.message = "Невалидная расстановка"
                     elif button_action == "Начать заново":
                         self.running = False
+                        self.settings.message_info = "редактор"
+                        self.board.clear_board()
                         self.setup_pieces()
                 else:
                     if self.running:
@@ -54,16 +67,23 @@ class ClassGameChess:
         """ Отрисовка игры """
         self.screen.fill(WHITE)
         self.board.draw_board()
-        self.settings.draw(None, self.board.color_cur_move)
+        self.settings.draw(self.board.winner, self.board.color_cur_move)
         for row in self.board.board:
             for piece in row:
                 if piece:
                     piece.draw(self.screen)
         pygame.display.flip()
 
+    def check_game_over(self):
+        self.board.game_over()
+        if self.board.winner != "-":
+            self.settings.message_info = "редактор"
+            self.running = False
+
     def setup_pieces(self):
         """ Установка стартовой расстановки """
         self.board.clear_board()
+        self.board.board = [[None for _ in range(8)] for _ in range(8)]
         # Установка фигур на доске
         self.board.add_piece(Class_Piece.King(4, 7, COLOR_W))
         self.board.add_piece(Class_Piece.Knight(3, 7, COLOR_W))
@@ -88,6 +108,3 @@ class ClassGameChess:
                         piece.image = pygame.image.load(f"img/{piece.color}Q.png").convert_alpha()
 
 
-if __name__ == "__main__":
-    game = ClassGameChess()
-    game.run()
